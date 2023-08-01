@@ -2,3 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+
+
+.chat-form:has(input:focus) {
+    outline: 3px solid #1c37e92a;
+    border: 2px solid #051db888;
+}

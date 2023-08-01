@@ -13,7 +13,7 @@ export const Home = () => {
 					Your Music Assistant
 				</h1>
 				<p className="text-lg text-center text-slate-500">
-					Using this software,you can ask your song recommendation and
+					Using this software,you can recommendation a song and
 					receive your answer using artificial intelligence assistant
 				</p>
                 <div className="flex flex-col items-center w-full max-w-sm mt-5">
