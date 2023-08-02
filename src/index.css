@@ -9,6 +9,9 @@
     border: 2px solid #051db888;
 }
 
+#chat-box {
+    scroll-behavior: smooth;
+}
 #chat-box::-webkit-scrollbar {
     width: 5px;
 }

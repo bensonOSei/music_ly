@@ -2,16 +2,15 @@
 import { UserBubble } from "./bubbles/UserBubble";
 import { ChatNotice } from "./ChatNotice";
 import { AiBubble } from "./bubbles/AiBubble";
-// import { data } from "../utils/dummyData";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
-// import { fetchRecommendation } from "../utils/helpers";
+import { faExclamationTriangle, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { RECOMMENDATION_ENDPOINT } from "../utils/constants";
 
 export const ChatArea = () => {
 	const [messages, setMessages] = useState([]);
 	const userInput = useRef(null);
+	const chatBoxRef = useRef(null);
 	const [userInputData, setUSerInputData] = useState({});
 
 	const setUserMessage = (e) => {
@@ -21,34 +20,45 @@ export const ChatArea = () => {
 		userInput.current.value = "";
 	};
 
+	useLayoutEffect(() => {
+		// Scroll to the bottom of the chat div whenever new messages are added
+		chatBoxRef.current.scrollTop = chatBoxRef.current.scrollHeight;
+	}, [messages]);
 
 	useEffect(() => {
-		if(messages.length > 0 && messages[messages.length - 1].role === 'user') {
+		if (
+			messages.length > 0 &&
+			messages[messages.length - 1].role === "user"
+		) {
 			fetch(RECOMMENDATION_ENDPOINT, {
 				method: "POST",
 				body: JSON.stringify(messages),
 				headers: {
-					'Content-Type': 'application/json'
-				}
+					"Content-Type": "application/json",
+				},
 			})
-			.then(res => res.json())
-			.then(aiResponse => {
-				setMessages([...messages, {
-					role: 'assistant',
-					content:aiResponse.data.naturalResponse
-				}])
-				console.log(aiResponse.data.naturalResponse)
-			})
-			.catch(error => {
-				console.log(error)
-			})
+				.then((res) => res.json())
+				.then((aiResponse) => {
+					setMessages([
+						...messages,
+						{
+							role: "assistant",
+							content: aiResponse.data.naturalResponse,
+						},
+					]);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
 		}
-		// console.log(messages);
 	}, [messages]);
 
 	return (
 		<div className="relative w-full max-w-7xl mx-auto h-5/6 bg-primary-100/50 rounded-xl p-5  pb-20">
-			<div id="chat-box"  className="w-full h-full flex flex-col relative overflow-x-hidden">
+			<div
+				ref={chatBoxRef}
+				id="chat-box"
+				className="w-full h-full flex flex-col relative overflow-x-hidden overflow-y-auto">
 				{messages.length > 0 ? (
 					messages.map((message, index) => {
 						if (message.role === "user")
@@ -70,6 +80,8 @@ export const ChatArea = () => {
 				) : (
 					<ChatNotice />
 				)}
+
+
 			</div>
 			<div className="absolute bottom-5 left-0 w-full h-11 px-2">
 				<div className="w-full max-w-2xl h-full bg-slate-50 mx-auto rounded-lg flex items-center justify-center overflow-hidden group chat-form transition">
