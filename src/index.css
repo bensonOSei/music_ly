@@ -8,3 +8,18 @@
     outline: 3px solid #1c37e92a;
     border: 2px solid #051db888;
 }
+
+#chat-box::-webkit-scrollbar {
+    width: 5px;
+}
+
+#chat-box::-webkit-scrollbar-track {
+    background: #1c37e92a;
+}
+
+#chat-box::-webkit-scrollbar-thumb {
+    background: #051db888;
+    border-radius: 5px;
+}
+
+
