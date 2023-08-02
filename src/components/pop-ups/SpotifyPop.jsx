@@ -47,7 +47,7 @@ export const SpotifyPop = ({ data }) => {
 			});
 	}, [data, isError]);
 
-	if( artist === null) return
+	if( artist === null || track === null) return
 
 	return (
 		<motion.div
