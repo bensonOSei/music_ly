@@ -4,20 +4,37 @@ import { ChatNotice } from "./ChatNotice";
 import { AiBubble } from "./bubbles/AiBubble";
 import { useEffect, useRef, useState, useLayoutEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faExclamationTriangle, faPaperPlane } from "@fortawesome/free-solid-svg-icons";
+import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { RECOMMENDATION_ENDPOINT } from "../utils/constants";
+import { ErrorPopUp } from "./pop-ups/ErrorPopUP";
+import { AnimatePresence } from "framer-motion";
+import { GeneratingResponsePop } from "./pop-ups/GeneratingResponsePop";
 
 export const ChatArea = () => {
 	const [messages, setMessages] = useState([]);
 	const userInput = useRef(null);
 	const chatBoxRef = useRef(null);
 	const [userInputData, setUSerInputData] = useState({});
+	const [error, setError] = useState(false);
+	const [errorMsg, setErrorMsg] = useState("");
+	const [isLoading, setIsLoading] =useState(false);
+
 
 	const setUserMessage = (e) => {
 		e.preventDefault();
 		setMessages((msg) => [...msg, userInputData]);
+		setIsLoading(true);
 
 		userInput.current.value = "";
+	};
+
+	const displayError = (message) => {
+		setError(true);
+		setErrorMsg(message);
+		setTimeout(() => {
+			setError(false);
+			setErrorMsg(message);
+		}, 3000);
 	};
 
 	useLayoutEffect(() => {
@@ -37,8 +54,22 @@ export const ChatArea = () => {
 					"Content-Type": "application/json",
 				},
 			})
-				.then((res) => res.json())
+				.then((res) => {
+					if (!res.ok) {
+						setError(true);
+						return res.status
+					}
+
+					return res.json()
+				})
 				.then((aiResponse) => {
+					setIsLoading(false);
+					if(typeof aiResponse === 'number') {
+						displayError(`Failed to generate response. Error code: ${aiResponse}`);
+						messages.pop();
+
+						return
+					}
 					setMessages([
 						...messages,
 						{
@@ -48,7 +79,11 @@ export const ChatArea = () => {
 					]);
 				})
 				.catch((error) => {
+					setIsLoading(false);
 					console.log(error);
+					displayError("Failed to generate response");
+					messages.pop();
+
 				});
 		}
 	}, [messages]);
@@ -58,7 +93,7 @@ export const ChatArea = () => {
 			<div
 				ref={chatBoxRef}
 				id="chat-box"
-				className="w-full h-full flex flex-col relative overflow-x-hidden overflow-y-auto">
+				className="w-full h-full flex flex-col relative overflow-x-hidden overflow-y-auto ">
 				{messages.length > 0 ? (
 					messages.map((message, index) => {
 						if (message.role === "user")
@@ -83,6 +118,10 @@ export const ChatArea = () => {
 
 
 			</div>
+				<AnimatePresence>
+					{error && <ErrorPopUp msg={errorMsg} />}
+					{isLoading && <GeneratingResponsePop />}
+				</AnimatePresence>
 			<div className="absolute bottom-5 left-0 w-full h-11 px-2">
 				<div className="w-full max-w-2xl h-full bg-slate-50 mx-auto rounded-lg flex items-center justify-center overflow-hidden group chat-form transition">
 					<form
