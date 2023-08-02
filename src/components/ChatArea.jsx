@@ -177,6 +177,8 @@ export const ChatArea = () => {
 								// console.log(userInputData)
 							}}
 							placeholder="What's your mood today?"
+
+							disabled={!isOnline}
 							className="border-0 bg-inherit w-11/12 input-box focus:ring-0"
 						/>
 						<button className="text-primary-500/60 hover:text-primary-500 hover:bg-primary-100/50 px-2 py-1 text-center rounded-md transition">

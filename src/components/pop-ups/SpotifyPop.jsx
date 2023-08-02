@@ -12,6 +12,7 @@ export const SpotifyPop = ({ data }) => {
 	const [isError, setIsError] = useState(false);
 	const { artist, track } = data;
 
+
 	useEffect(() => {
         // console.log(data)
         // return
@@ -45,6 +46,9 @@ export const SpotifyPop = ({ data }) => {
 				setIsFetching(false);
 			});
 	}, [data, isError]);
+
+	if( artist === null) return
+
 	return (
 		<motion.div
 			initial={{ opacity: 0, y: 100, x: "-50%", width: 0 }}
