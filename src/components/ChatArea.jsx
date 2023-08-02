@@ -2,7 +2,7 @@
 import { UserBubble } from "./bubbles/UserBubble";
 import { ChatNotice } from "./ChatNotice";
 import { AiBubble } from "./bubbles/AiBubble";
-import { useEffect, useRef, useState, useLayoutEffect } from "react";
+import { useEffect, useRef, useState, useLayoutEffect, useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { RECOMMENDATION_ENDPOINT } from "../utils/constants";
@@ -11,7 +11,7 @@ import { AnimatePresence } from "framer-motion";
 import { GeneratingResponsePop } from "./pop-ups/GeneratingResponsePop";
 import { SpotifyPop } from "./pop-ups/SpotifyPop";
 import { isObjectEmpty } from "../utils/helpers";
-
+import { OnlineContext } from "../serviceProviders/OnlineContext";
 export const ChatArea = () => {
 	const [messages, setMessages] = useState([]);
 	const userInput = useRef(null);
@@ -22,9 +22,23 @@ export const ChatArea = () => {
 	const [isLoading, setIsLoading] = useState(false);
 	const [songDetails, setSongDetails] = useState({});
 	const [showSpotifyPop, setShowSpotifyPop] = useState(false);
+	const { isOnline } = useContext(OnlineContext)
 
 	const setUserMessage = (e) => {
+		setError(false);
 		e.preventDefault();
+		if(!isOnline) {
+			displayError("You are offline. Please check your internet connection.")
+			return;
+		}
+
+		if(userInput.current.value === "") {
+			displayError("Please enter a query.")
+			return;
+		}
+
+		if(isLoading) return;
+
 		setMessages((msg) => [...msg, userInputData]);
 		setIsLoading(true);
 		setShowSpotifyPop(false);
@@ -146,12 +160,13 @@ export const ChatArea = () => {
 					<form
 						action="#"
 						onSubmit={setUserMessage}
-						autoComplete="false"
+						autoComplete="off"
 						className="w-full flex items-center justify-evenly px-2">
 						<input
 							type="text"
 							id="chat-message"
 							name="chat-message"
+							autoComplete="off"
 							ref={userInput}
 							onChange={(e) => {
 								setUSerInputData({

@@ -6,7 +6,7 @@ export const Chat = () => {
 	return (
 		<div className="p-2 md:p-5 w-full h-screen">
 			<ChatHeader />
-      <ChatArea />
+			<ChatArea />
 			{/* footer */}
 			<Footer />
 		</div>

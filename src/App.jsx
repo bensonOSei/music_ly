@@ -1,19 +1,27 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom"
-import { Home } from "./pages/Home"
-import { Chat } from "./pages/Chat"
+import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { Home } from "./pages/Home";
+import { Chat } from "./pages/Chat";
+import { OnlineProvider } from "./serviceProviders/OnlineContext";
 
 function App() {
-
-  return (
-    <>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/chat" element={<Chat />} />
-        </Routes>
-      </BrowserRouter>
-    </>
-  )
+	return (
+		<>
+			<OnlineProvider>
+				<BrowserRouter>
+					<Routes>
+						<Route
+							path="/"
+							element={<Home />}
+						/>
+						<Route
+							path="/chat"
+							element={<Chat />}
+						/>
+					</Routes>
+				</BrowserRouter>
+			</OnlineProvider>
+		</>
+	);
 }
 
-export default App
+export default App;

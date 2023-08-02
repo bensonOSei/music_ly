@@ -25,3 +25,15 @@ export const fetchRecommendation = async (queryToSend, errorCallback) => {
 export function isObjectEmpty(obj) {
     return Object.keys(obj).length === 0;
 }
+
+export const checkOnlineStatus = (callback) => {
+
+    // check if the user is connected to the internet every 5 seconds
+    setInterval(() => {
+        if (navigator.onLine) {
+            callback(true);
+        } else {
+            callback(false);
+        }
+    }, 5000);
+}
