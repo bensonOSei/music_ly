@@ -9,8 +9,8 @@ import { RECOMMENDATION_ENDPOINT } from "../utils/constants";
 import { ErrorPopUp } from "./pop-ups/ErrorPopUP";
 import { AnimatePresence } from "framer-motion";
 import { GeneratingResponsePop } from "./pop-ups/GeneratingResponsePop";
-import { SpotifyPop } from "./pop-ups/SpotifyPop";
-import { isObjectEmpty } from "../utils/helpers";
+// import { SpotifyPop } from "./pop-ups/SpotifyPop";
+// import { isObjectEmpty } from "../utils/helpers";
 import { OnlineContext } from "../serviceProviders/OnlineContext";
 export const ChatArea = () => {
 	const [messages, setMessages] = useState([]);
@@ -20,8 +20,8 @@ export const ChatArea = () => {
 	const [error, setError] = useState(false);
 	const [errorMsg, setErrorMsg] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const [songDetails, setSongDetails] = useState({});
-	const [showSpotifyPop, setShowSpotifyPop] = useState(false);
+	// const [songDetails, setSongDetails] = useState({});
+	// const [showSpotifyPop, setShowSpotifyPop] = useState(false);
 	const { isOnline } = useContext(OnlineContext)
 
 	const setUserMessage = (e) => {
@@ -41,7 +41,7 @@ export const ChatArea = () => {
 
 		setMessages((msg) => [...msg, userInputData]);
 		setIsLoading(true);
-		setShowSpotifyPop(false);
+		// setShowSpotifyPop(false);
 
 		userInput.current.value = "";
 	};
@@ -55,12 +55,12 @@ export const ChatArea = () => {
 		}, 3000);
 	};
 
-	const displaySpotifyPop = () => {
-		setShowSpotifyPop(true);
-		setTimeout(() => {
-			setShowSpotifyPop(false);
-		}, 78000);
-	}
+	// const displaySpotifyPop = () => {
+	// 	setShowSpotifyPop(true);
+	// 	setTimeout(() => {
+	// 		setShowSpotifyPop(false);
+	// 	}, 78000);
+	// }
 
 	useLayoutEffect(() => {
 		// Scroll to the bottom of the chat div whenever new messages are added
@@ -97,16 +97,19 @@ export const ChatArea = () => {
 
 						return;
 					}
-					if(!isObjectEmpty(aiResponse.data.songDetails)) {
-						setSongDetails(aiResponse.data.songDetails);
-						displaySpotifyPop();
-						console.log(aiResponse.data.songDetails);
-					}
+
+					// console.log(aiResponse)
+					// return;
+					// if(!isObjectEmpty(aiResponse.data.songDetails)) {
+					// 	setSongDetails(aiResponse.data.songDetails);
+					// 	displaySpotifyPop();
+					// 	console.log(aiResponse.data.songDetails);
+					// }
 					setMessages([
 						...messages,
 						{
 							role: "assistant",
-							content: aiResponse.data.naturalResponse,
+							content: aiResponse.data,
 						},
 					]);
 				})
@@ -153,7 +156,7 @@ export const ChatArea = () => {
 			<AnimatePresence>
 				{error && <ErrorPopUp msg={errorMsg} />}
 				{isLoading && <GeneratingResponsePop />}
-				{showSpotifyPop && <SpotifyPop data={songDetails} /> }
+				{/* {showSpotifyPop && <SpotifyPop data={songDetails} /> } */}
 			</AnimatePresence>
 			<div className="absolute bottom-5 left-0 w-full h-11 px-2">
 				<div className="w-full max-w-2xl h-full bg-slate-50 mx-auto rounded-lg flex items-center justify-center overflow-hidden group chat-form transition">
