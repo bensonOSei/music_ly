@@ -1,2 +1,4 @@
 export const APP_NAME = "Rec.AI";
-export const RECOMMENDATION_ENDPOINT = 'http://localhost:3000/api/query';
+const API_URL = "http://localhost:3000/api";
+export const RECOMMENDATION_ENDPOINT = API_URL + '/query';
+export const SONG_DETAILS_ENDPOINT = API_URL + '/query/song';

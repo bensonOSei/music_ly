@@ -20,3 +20,8 @@ export const fetchRecommendation = async (queryToSend, errorCallback) => {
         return errorCallback
     }
 };
+
+
+export function isObjectEmpty(obj) {
+    return Object.keys(obj).length === 0;
+}
