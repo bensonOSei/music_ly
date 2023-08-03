@@ -2,7 +2,13 @@
 import { UserBubble } from "./bubbles/UserBubble";
 import { ChatNotice } from "./ChatNotice";
 import { AiBubble } from "./bubbles/AiBubble";
-import { useEffect, useRef, useState, useLayoutEffect, useContext } from "react";
+import {
+	useEffect,
+	useRef,
+	useState,
+	useLayoutEffect,
+	useContext,
+} from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faPaperPlane } from "@fortawesome/free-solid-svg-icons";
 import { RECOMMENDATION_ENDPOINT } from "../utils/constants";
@@ -10,7 +16,6 @@ import { ErrorPopUp } from "./pop-ups/ErrorPopUP";
 import { AnimatePresence } from "framer-motion";
 import { GeneratingResponsePop } from "./pop-ups/GeneratingResponsePop";
 import { SpotifyPop } from "./pop-ups/SpotifyPop";
-import { isObjectEmpty } from "../utils/helpers";
 import { OnlineContext } from "../serviceProviders/OnlineContext";
 export const ChatArea = () => {
 	const [messages, setMessages] = useState([]);
@@ -20,28 +25,31 @@ export const ChatArea = () => {
 	const [error, setError] = useState(false);
 	const [errorMsg, setErrorMsg] = useState("");
 	const [isLoading, setIsLoading] = useState(false);
-	const [songDetails, setSongDetails] = useState({});
+	const [response, setResponse] = useState("");
 	const [showSpotifyPop, setShowSpotifyPop] = useState(false);
-	const { isOnline } = useContext(OnlineContext)
+	const { isOnline } = useContext(OnlineContext);
 
 	const setUserMessage = (e) => {
 		setError(false);
+		setResponse("")
+		setShowSpotifyPop(false)
 		e.preventDefault();
-		if(!isOnline) {
-			displayError("You are offline. Please check your internet connection.")
+		if (!isOnline) {
+			displayError(
+				"You are offline. Please check your internet connection."
+			);
 			return;
 		}
 
-		if(userInput.current.value === "") {
-			displayError("Please enter a query.")
+		if (userInput.current.value === "") {
+			displayError("Please enter a query.");
 			return;
 		}
 
-		if(isLoading) return;
+		if (isLoading) return;
 
 		setMessages((msg) => [...msg, userInputData]);
 		setIsLoading(true);
-		setShowSpotifyPop(false);
 
 		userInput.current.value = "";
 	};
@@ -57,10 +65,20 @@ export const ChatArea = () => {
 
 	const displaySpotifyPop = () => {
 		setShowSpotifyPop(true);
+
 		setTimeout(() => {
 			setShowSpotifyPop(false);
-		}, 78000);
+			setResponse("")
+		}, 30000);
 	}
+	const playSong = (aiResponse) => {
+		setResponse(aiResponse);
+		displaySpotifyPop()
+		// console.log('yes')
+
+		
+	}
+
 
 	useLayoutEffect(() => {
 		// Scroll to the bottom of the chat div whenever new messages are added
@@ -81,37 +99,16 @@ export const ChatArea = () => {
 			})
 				.then((res) => {
 					if (!res.ok) {
-						setError(true);
+						displayError("Failed to generate response");
+						messages.pop();
 						return res.status;
 					}
-
 					return res.json();
 				})
 				.then((aiResponse) => {
-					// setIsLoading(false);
-					if (typeof aiResponse === "number") {
-						displayError(
-							`Failed to generate response. Error code: ${aiResponse}`
-						);
-						messages.pop();
+					if(typeof aiResponse === 'number') return
 
-						return;
-					}
-
-					// console.log(aiResponse)
-					// return;
-					if(!isObjectEmpty(aiResponse.data.songDetails)) {
-						setSongDetails(aiResponse.data.songDetails);
-						displaySpotifyPop();
-						console.log(aiResponse.data.songDetails);
-					}
-					setMessages([
-						...messages,
-						{
-							role: "assistant",
-							content: aiResponse.data.naturalResponse,
-						},
-					]);
+					setMessages([...messages, aiResponse.data]);
 				})
 				.catch((error) => {
 					// setIsLoading(false);
@@ -145,6 +142,7 @@ export const ChatArea = () => {
 							return (
 								<AiBubble
 									response={message.content}
+									play={() => playSong(message.content)}
 									key={index}
 								/>
 							);
@@ -156,7 +154,7 @@ export const ChatArea = () => {
 			<AnimatePresence>
 				{error && <ErrorPopUp msg={errorMsg} />}
 				{isLoading && <GeneratingResponsePop />}
-				{showSpotifyPop && <SpotifyPop data={songDetails} /> }
+				{ showSpotifyPop && <SpotifyPop data={response} />}
 			</AnimatePresence>
 			<div className="absolute bottom-5 left-0 w-full h-11 px-2">
 				<div className="w-full max-w-2xl h-full bg-slate-50 mx-auto rounded-lg flex items-center justify-center overflow-hidden group chat-form transition">
@@ -180,7 +178,6 @@ export const ChatArea = () => {
 								// console.log(userInputData)
 							}}
 							placeholder="What's your mood today?"
-
 							disabled={!isOnline}
 							className="border-0 bg-inherit w-11/12 input-box focus:ring-0"
 						/>

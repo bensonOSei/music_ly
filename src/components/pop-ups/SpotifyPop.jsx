@@ -6,48 +6,57 @@ import { SONG_DETAILS_ENDPOINT } from "../../utils/constants";
 import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 
-export const SpotifyPop = ({ data }) => {
+export const SpotifyPop = ({ data = "" }) => {
 	const [songUrl, setSongUrl] = useState("");
 	const [isFetching, setIsFetching] = useState(false);
 	const [isError, setIsError] = useState(false);
-	const { artist, track } = data;
-
+	const [artist, setArtist] = useState("");
+	const [track, setTrack] = useState("");
 
 	useEffect(() => {
-        // console.log(data)
-        // return
-		setIsFetching(true);
+		if (data === "") return;
+		// console.log(data)
+		// return
+		setIsError(false);
 		fetch(SONG_DETAILS_ENDPOINT, {
 			method: "POST",
-			body: JSON.stringify(data),
+			body: JSON.stringify({ content: data }),
 			headers: {
 				"Content-Type": "application/json",
 			},
 		})
 			.then((res) => {
+				setIsFetching(true);
+
 				if (!res.ok) {
-					setIsError(true);
+					// setIsError(true);
 					return res.status;
 				}
 				return res.json();
 			})
-			.then((track) => {
-				if (isError) {
+			.then((data) => {
+				if (typeof data === "number") {
+					setIsError(true);
 					return;
 				}
-				setSongUrl(track.data);
-				console.log(track);
+				const { artist, track, url } = data.response;
+				setArtist(artist);
+				setTrack(track);
+				setSongUrl(url);
+				setIsFetching(false);
 			})
-			.catch((err) => {
+			.catch(() => {
 				setIsError(true);
-				console.log(err);
-			})
-			.finally(() => {
+				// console.log(err);
 				setIsFetching(false);
 			});
-	}, [data, isError]);
+	}, [data]);
 
-	if( artist === null || track === null) return
+	useEffect(() => {
+		setIsError(false);
+	}, [data]);
+
+	if (data === "") return null;
 
 	return (
 		<motion.div
@@ -61,31 +70,34 @@ export const SpotifyPop = ({ data }) => {
 			/>
 			<div className="flex items-center gap-2">
 				<div className="flex flex-col">
-					<span className="font-bold text-ellipsis">{track}</span>
+					{isFetching ? (
+						<span className="w-4 h-2 rounded-full bg-slate-600/40 animate-pulse inline-block"></span>
+					) : (
+						<span className="font-bold text-ellipsis">{track}</span>
+					)}
 					<span className="text-xs italic text-ellipsis">
 						{artist}
 					</span>
 				</div>
 
 				{isError ? (
-                    <span className="text-xs italic">
-                        Failed to fetch song details
-                    </span>
-                ) :
-					(isFetching ? (
-						<FontAwesomeIcon
-							icon={faSpinner}
-							className="mr-2 animate-spin"
-						/>
-					) : (
-						<a
-							href={songUrl}
-							target="_blank"
-							rel="noreferrer"
-							className="p-2 rounded-full hover:bg-slate-500 w-8 h-8 grid place-items-center transition opacity-40 hover:opacity-100">
-							<FontAwesomeIcon icon={faPlay} />
-						</a>
-					))}
+					<span className="text-xs italic">
+						Failed to fetch song details
+					</span>
+				) : isFetching ? (
+					<FontAwesomeIcon
+						icon={faSpinner}
+						className="mr-2 animate-spin"
+					/>
+				) : (
+					<a
+						href={songUrl}
+						target="_blank"
+						rel="noreferrer"
+						className="p-2 rounded-full hover:bg-slate-500 w-8 h-8 grid place-items-center transition opacity-40 hover:opacity-100">
+						<FontAwesomeIcon icon={faPlay} />
+					</a>
+				)}
 			</div>
 			<span></span>
 		</motion.div>
@@ -93,5 +105,5 @@ export const SpotifyPop = ({ data }) => {
 };
 
 SpotifyPop.propTypes = {
-	data: PropTypes.object.isRequired,
+	data: PropTypes.string,
 };
