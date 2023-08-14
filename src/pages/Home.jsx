@@ -13,8 +13,9 @@ export const Home = () => {
 					Your Music Assistant
 				</h1>
 				<p className="text-lg text-center text-slate-500">
-					Using this software,you can recommendation a song and
-					receive your answer using artificial intelligence assistant
+					Looking for the perfect song to match your mood? <br />
+					We&apos;ve got you covered.
+					
 				</p>
                 <div className="flex flex-col items-center w-full max-w-sm mt-5">
                     <img src={welcomeImg} alt="Welcome" className="w-full" />

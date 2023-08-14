@@ -17,6 +17,7 @@ import { AnimatePresence } from "framer-motion";
 import { GeneratingResponsePop } from "./pop-ups/GeneratingResponsePop";
 import { SpotifyPop } from "./pop-ups/SpotifyPop";
 import { OnlineContext } from "../serviceProviders/OnlineContext";
+
 export const ChatArea = () => {
 	const [messages, setMessages] = useState([]);
 	const userInput = useRef(null);
