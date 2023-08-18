@@ -25,7 +25,6 @@ export const UserShort = () => {
 	};
 
 	useEffect(() => {
-		console.log(user);
 
 		if (!user) {
 			fetchUser(token);
@@ -123,7 +122,7 @@ export const UserShort = () => {
 							</button>
 						</div>
 						<div className="font-bold flex items-center text-xs  my-2" >
-							<Link className="text-gray-500 hover:text-primary-900" to="">Privacy Policy</Link>
+							<Link className="text-gray-500 hover:text-primary-900" to="/privacy-policy">Privacy Policy</Link>
 							<div className="mx-1 w-1 h-1 rounded-full bg-gray-500"></div>
 							<Link className="text-gray-500 hover:text-primary-900" to="/contributors">Contributors</Link>
 

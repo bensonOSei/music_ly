@@ -6,9 +6,8 @@ import { useContext } from "react";
 export const Start = () => {
 	const { isLoggedIn } = useContext(AuthContext);
 
-	if (isLoggedIn) return <Navigate to="/" />;
+	if (isLoggedIn) return <Navigate to="/chat" />;
 
-	console.log(isLoggedIn)
 	return (
 		<div className="flex flex-col-reverse md:flex-row h-screen">
 			<div className="flex-1 grid md:place-items-center p-5 ">

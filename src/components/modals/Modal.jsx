@@ -13,7 +13,7 @@ export const Modal = ({ element, closeModal }) => {
 				{closeModal && (
 					<motion.button
 						onClick={closeModal}
-						className="absolute top-2 right-3 text-lg"
+						className="absolute top-2 right-5 text-lg opacity-20 hover:opacity-100 transition-opacity"
 						whileHover={{ scale: 1.1 }}
 						whileTap={{ scale: 0.9 }}>
 						<FontAwesomeIcon icon={faTimes} />

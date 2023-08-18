@@ -3,6 +3,7 @@ import { UserContext } from "../contexts/UserContext";
 import axios from "axios";
 import { BACKEND_URL } from "../../utils/constants";
 import PropTypes from 'prop-types'
+import { removeAuth } from "../../utils/helpers";
 
 export const UserProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
@@ -32,6 +33,10 @@ export const UserProvider = ({ children }) => {
         })
         .catch((err) => {
             console.log(err.response.data.message)
+            if(err.response.status === 403) {
+                setUser(null)
+                removeAuth()
+            }
             setFetchUserError(err.response.data.message)
         })
     },[])

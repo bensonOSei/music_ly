@@ -17,6 +17,7 @@ import { AnimatePresence } from "framer-motion";
 import { GeneratingResponsePop } from "./pop-ups/GeneratingResponsePop";
 import { SpotifyPop } from "./pop-ups/SpotifyPop";
 import { OnlineContext } from "../serviceProviders/OnlineContext";
+import { AuthContext } from "../serviceProviders/contexts/AuthContext";
 
 export const ChatArea = () => {
 	const [messages, setMessages] = useState([]);
@@ -29,6 +30,8 @@ export const ChatArea = () => {
 	const [response, setResponse] = useState("");
 	const [showSpotifyPop, setShowSpotifyPop] = useState(false);
 	const { isOnline } = useContext(OnlineContext);
+	const { isLoggedIn } = useContext(AuthContext); 
+
 
 	const setUserMessage = (e) => {
 		setError(false);
@@ -73,6 +76,12 @@ export const ChatArea = () => {
 		}, 30000);
 	}
 	const playSong = (aiResponse) => {
+
+		if(!isLoggedIn) {
+			setError(true);
+			setErrorMsg("Please login to play songs");
+			return;
+		}
 		setResponse(aiResponse);
 		displaySpotifyPop()
 		// console.log('yes')

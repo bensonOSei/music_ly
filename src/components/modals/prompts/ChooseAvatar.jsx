@@ -2,15 +2,17 @@ import { avatars } from "../../../utils/avatars";
 import { useState, useContext } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { UserContext } from "../../../serviceProviders/contexts/UserContext";
-import { getAuth } from "../../../utils/helpers";
+import { getAuth, setAuth } from "../../../utils/helpers";
 import axios from "axios";
 import { BACKEND_URL } from "../../../utils/constants";
 import { Spinner } from "../../Loaders/Spinner";
 import { SuccessPrompt } from "./SuccessPrompt";
+import { AuthContext } from "../../../serviceProviders/contexts/AuthContext";
 
 export const ChooseAvatar = () => {
 	const [selectedAvatar, setSelectedAvatar] = useState(null);
-	const { updateUser, user } = useContext(UserContext);
+	const { setUser, user } = useContext(UserContext);
+	const { setToken } = useContext(AuthContext)
 	const { imagePath } = user;
 	const [sending, setSending] = useState(false);
 	const [error, setError] = useState(null);
@@ -23,7 +25,7 @@ export const ChooseAvatar = () => {
 		if(token === null) return;
 
 		if(imagePath === selectedAvatar) {
-			setError("You already using this avatar");
+			setError("You are already using this avatar");
 			return;
 		}
 		setSending(true);
@@ -43,13 +45,15 @@ export const ChooseAvatar = () => {
 				}
 			)
 			.then((res) => {
-				updateUser({ imagePath: res.data.data });
+				setUser(res.data.data)
+				setAuth(res.data.token)
+				setToken(res.data.token)
 				setSelectedAvatar(null);
 				setSuccess(true);
 				// console.log(user);
 			})
 			.catch((err) => {
-				console.log(err.response.data.message);
+				console.log(err);
 				setError(err.response.data.message);
 			})
 			.finally(() => setSending(false));

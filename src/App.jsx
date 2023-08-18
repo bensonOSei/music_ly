@@ -8,6 +8,7 @@ import { AuthProvider } from "./serviceProviders/providers/AuthProvider";
 import { LoginForm } from "./components/form/LoginForm";
 import { SignUpForm } from "./components/form/SignUpForm";
 import { UserProvider } from "./serviceProviders/providers/UserProvider";
+// import { PrivacyPolicy } from "./pages/PrivacyPolicy";
 
 function App() {
 	return (
@@ -40,6 +41,10 @@ function App() {
 									element={<SignUpForm />}
 								/>
 							</Route>
+							{/* <Route
+								path="privacy-policy"
+								element={<PrivacyPolicy />}
+							/> */}
 						</Routes>
 					</BrowserRouter>
 				</OnlineProvider>

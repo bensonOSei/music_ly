@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -22,7 +22,7 @@ export const AuthProvider = ({ children }) => {
 				},
 			})
 			.then((res) => {
-				console.log(res);
+				// console.log(res);
 				setToken(res.data.token);
 				setIsLoggedIn(true);
 				setAuthError(null);
@@ -30,7 +30,15 @@ export const AuthProvider = ({ children }) => {
 				setUser(res.data.data)
 			})
 			.catch((err) => {
-				console.log(err);
+				// console.log(err);
+				if(err.status === 500 ) {
+					setAuthError('Something happened on our side. Please again later')
+					return
+				}
+				if(err.message === 'Network error') {
+					setAuthError('Server is unresponsive')
+					return
+				}
 				if(err.status === 422) {
 					setAuthError("Invalid email or password")
 					return
@@ -47,7 +55,7 @@ export const AuthProvider = ({ children }) => {
 				},
 			})
 			.then((res) => {
-				console.log(res);
+				// console.log(res);
 				setToken(res.data.token);
 				setIsLoggedIn(true);
 				setAuthError(null);
@@ -55,7 +63,7 @@ export const AuthProvider = ({ children }) => {
 				setUser(res.data.data)
 			})
 			.catch((err) => {
-				console.log(err);
+				// console.log(err);
 				if(err.response.status === 422) {
 					setAuthError('Invalid inputs. Please check your inputs and try again.')
 					return
@@ -73,9 +81,13 @@ export const AuthProvider = ({ children }) => {
 		removeAuth()
 	}
 
+	useEffect(() => {
+		setAuth(null)
+	},[])
+
 	return (
 		<AuthContext.Provider
-			value={{ token, isLoggedIn, login, authError, signup, logout }}>
+			value={{ token, isLoggedIn, login, authError, signup, logout, setToken }}>
 			{children}
 		</AuthContext.Provider>
 	);

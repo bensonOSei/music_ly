@@ -11,6 +11,7 @@ export const SignUpForm = () => {
 	const [formData, setFormData] = useState({});
 	const { signup, authError } = useContext(AuthContext);
 	const [error, setError] = useState(false);
+	const [errorMsg, setErrorMsg] = useState("");
 	const [submitting, setSubmitting] = useState(false);
 	const [passwordMatch, setPasswordMatch] = useState(true);
 	const [passwordStrength, setPasswordStrength] = useState(null);
@@ -27,7 +28,7 @@ export const SignUpForm = () => {
 
 	useEffect(() => {
 		if(formData.password) {
-			console.log(passwordStrength)
+			// console.log(passwordStrength)
 			setPasswordStrength(checkPasswordStrength(formData.password))
 		}
 		if(formData.password && formData.confirmPassword) {
@@ -37,7 +38,20 @@ export const SignUpForm = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+
 		setError(false)
+		setErrorMsg("")
+
+		if (passwordStrength < 5) {
+			setError(true)
+			setErrorMsg('Password is weak. Please set a stronger password')
+		}
+
+		if(!passwordMatch) {
+			setError(true)
+			setErrorMsg('Passwords do not match')
+			return
+		}
 		setSubmitting(true);
 
 		signup(formData);
@@ -69,7 +83,7 @@ export const SignUpForm = () => {
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: -10 }}
 						className="text-red-500 p-2 text-center bg-red-100 w-full font-semibold">
-						{authError}
+						{errorMsg === "" ? authError : errorMsg}
 					</motion.div>
 				)}
 			</AnimatePresence>
