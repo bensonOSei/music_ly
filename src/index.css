@@ -1,29 +1,35 @@
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&family=REM:ital,wght@0,100;0,300;0,500;0,600;0,700;0,900;1,100;1,300;1,500;1,600;1,700;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-
-
-.chat-form:has(input:focus) {
-    outline: 3px solid #1c37e92a;
-    border: 2px solid #051db888;
-}
-
-#chat-box {
-    scroll-behavior: smooth;
-}
-#chat-box::-webkit-scrollbar {
-    width: 5px;
-}
-
-#chat-box::-webkit-scrollbar-track {
-    background: #1c37e92a;
-}
-
-#chat-box::-webkit-scrollbar-thumb {
-    background: #051db888;
-    border-radius: 5px;
-}
-
-
+@layer base {
+    *:focus{
+        @apply outline-none ring-4 ring-primary-100;
+    }
+    body {
+        font-family: "Quicksand", sans-serif;
+        @apply text-primary-900;
+    }
+    .chat-form:has(input:focus) {
+        outline: 3px solid #1c37e92a;
+        border: 2px solid #051db888;
+    }
+    
+    #chat-box {
+        scroll-behavior: smooth;
+    }
+    #chat-box::-webkit-scrollbar {
+        width: 5px;
+    }
+    
+    #chat-box::-webkit-scrollbar-track {
+        background: #1c37e92a;
+    }
+    
+    #chat-box::-webkit-scrollbar-thumb {
+        background: #051db888;
+        border-radius: 5px;
+    }
+}    
 

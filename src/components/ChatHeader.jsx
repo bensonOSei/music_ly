@@ -3,10 +3,14 @@ import botLogo from "../assets/illustrations/blue-robot.png";
 import { APP_NAME } from "../utils/constants";
 import { OnlineContext } from "../serviceProviders/OnlineContext";
 import { useContext } from "react";
+import { UserShort } from "./header-components/UserShort";
+import { AuthContext } from "../serviceProviders/contexts/AuthContext";
+
 export const ChatHeader = () => {
 	const { isOnline } = useContext(OnlineContext);
+	const { isLoggedIn } = useContext(AuthContext);
 	return (
-		<div className="px-5 py-2 flex items-center justify-between">
+		<div className="px-8 py-1 flex items-center justify-between">
 			<div className="flex items-center">
 				<div className="w-7 h-7">
 					<Link to={"/"}>
@@ -37,6 +41,21 @@ export const ChatHeader = () => {
 					)}
 				</div>
 			</div>
+
+			{isLoggedIn ? (
+				<UserShort />
+			) : (
+				<>
+					<div className="p-1 text-sm flex flex-col md:flex-row items-end md:items-center">
+						<span>Do more with {APP_NAME}.</span>
+						<Link
+							to={"/start/signup"}
+							className="p-2 rounded-md bg-primary-500 hover:bg-primary-600 text-white font-semibold text-xs ml-1 ">
+							Sing up
+						</Link>
+					</div>
+				</>
+			)}
 		</div>
 	);
 };
