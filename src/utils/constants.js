@@ -1,6 +1,7 @@
 export const APP_NAME = "Rec.AI";
-const API_URL = "https://recai.onrender.com/api";
-// const API_URL = "http://localhost:3000/api";
+// export const BACKEND_URL = 'http://localhost:3000'
+export const BACKEND_URL = "https://recai.onrender.com";
+export const API_URL = BACKEND_URL + "/api";
 
 export const RECOMMENDATION_ENDPOINT = API_URL + '/query';
 export const SONG_DETAILS_ENDPOINT = API_URL + '/query/song';
