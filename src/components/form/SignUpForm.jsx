@@ -45,6 +45,7 @@ export const SignUpForm = () => {
 		if (passwordStrength < 5) {
 			setError(true)
 			setErrorMsg('Password is weak. Please set a stronger password')
+			return
 		}
 
 		if(!passwordMatch) {
