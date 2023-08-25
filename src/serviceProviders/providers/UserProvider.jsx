@@ -17,31 +17,9 @@ export const UserProvider = ({ children }) => {
         });
 	}, []);
 
-    const fetchUser = useCallback(async (token) =>{
-        // console.log(token)
-        if(!token) return
 
-        axios.get(`${BACKEND_URL}/auth/user`, {
-            headers: {
-                'Content-Type': 'application/json',
-                'x-access-token': token
-            }
-        })
-        .then((res) => {
-            // console.log(res)
-            setUser(res.data.data)
-        })
-        .catch((err) => {
-            console.log(err.response.data.message)
-            if(err.response.status === 403) {
-                setUser(null)
-                removeAuth()
-            }
-            setFetchUserError(err.response.data.message)
-        })
-    },[])
 	return(
-         <UserContext.Provider value={{ user, setUser, fetchUserError, fetchUser, updateUser}} >
+         <UserContext.Provider value={{ user, setUser, fetchUserError, updateUser}} >
             {children}
         </UserContext.Provider>);
 };

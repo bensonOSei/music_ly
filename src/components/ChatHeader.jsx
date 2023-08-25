@@ -9,6 +9,8 @@ import { AuthContext } from "../serviceProviders/contexts/AuthContext";
 export const ChatHeader = () => {
 	const { isOnline } = useContext(OnlineContext);
 	const { isLoggedIn } = useContext(AuthContext);
+
+	
 	return (
 		<div className="px-8 py-1 flex items-center justify-between">
 			<div className="flex items-center">
@@ -51,7 +53,7 @@ export const ChatHeader = () => {
 						<Link
 							to={"/start/signup"}
 							className="p-2 rounded-md bg-primary-500 hover:bg-primary-600 text-white font-semibold text-xs ml-1 ">
-							Sing up
+							Sign up
 						</Link>
 					</div>
 				</>

@@ -48,7 +48,7 @@ export const getSession = (key) => localStorage.getItem(key);
 
 export const setSession = (key) => localStorage.setItem(key);
 
-export const getAuth = () => localStorage.getItem("auth");
+export const getAuth = () => localStorage.getItem("auth") === 'null' ? null : localStorage.getItem("auth");
 
 export const setAuth = (auth) => localStorage.setItem("auth", auth);
 
@@ -97,5 +97,5 @@ export const checkPasswordStrength = (password) => {
 	}
 
 	return strength;
-	
+
 }

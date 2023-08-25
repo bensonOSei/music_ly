@@ -58,6 +58,7 @@ export const SignUpForm = () => {
 	};
 
 	useEffect(() => {
+		setError(false)
 		if(authError) {
 			setError(true)
 			setSubmitting(false)

@@ -30,8 +30,9 @@ export const LoginForm = () => {
 	};
 
 	useEffect(() => {
+		setError(false)
 		if (authError) {
-			console.log(authError);
+			// console.log(authError);
 			setError(true);
 			setSubmitting(false);
 		}

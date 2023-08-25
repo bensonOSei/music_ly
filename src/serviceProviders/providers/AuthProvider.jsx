@@ -1,4 +1,4 @@
-import { useCallback, useContext, useEffect, useState } from "react";
+import { useCallback, useContext, useState } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import PropTypes from "prop-types";
 import axios from "axios";
@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 	const [isLoggedIn, setIsLoggedIn] = useState(() => getAuth() !== null);
 	const [token, setToken] = useState(() => getAuth());
 	const [authError, setAuthError] = useState(null);
-	const { setUser } = useContext(UserContext) 
+	const { setUser } = useContext(UserContext)
 
 	const login = useCallback((inputs) => {
 		setAuthError(null)
@@ -22,7 +22,6 @@ export const AuthProvider = ({ children }) => {
 				},
 			})
 			.then((res) => {
-				// console.log(res);
 				setToken(res.data.token);
 				setIsLoggedIn(true);
 				setAuthError(null);
@@ -30,16 +29,15 @@ export const AuthProvider = ({ children }) => {
 				setUser(res.data.data)
 			})
 			.catch((err) => {
-				// console.log(err);
-				if(err.status === 500 ) {
+				if (err.status === 500) {
 					setAuthError('Something happened on our side. Please again later')
 					return
 				}
-				if(err.message === 'Network error') {
+				if (err.message === 'Network error') {
 					setAuthError('Server is unresponsive')
 					return
 				}
-				if(err.status === 422) {
+				if (err.status === 422) {
 					setAuthError("Invalid email or password")
 					return
 				}
@@ -55,7 +53,6 @@ export const AuthProvider = ({ children }) => {
 				},
 			})
 			.then((res) => {
-				// console.log(res);
 				setToken(res.data.token);
 				setIsLoggedIn(true);
 				setAuthError(null);
@@ -63,8 +60,7 @@ export const AuthProvider = ({ children }) => {
 				setUser(res.data.data)
 			})
 			.catch((err) => {
-				// console.log(err);
-				if(err.response.status === 422) {
+				if (err.response.status === 422) {
 					setAuthError('Invalid inputs. Please check your inputs and try again.')
 					return
 				}
@@ -81,13 +77,42 @@ export const AuthProvider = ({ children }) => {
 		removeAuth()
 	}
 
-	useEffect(() => {
-		setAuth(null)
-	},[])
+	const fetchUser = useCallback(async () => {
+		if (token === 'null') {
+			// setIsLoggedIn(false)
+			// setUser(null)
+			return
+		}
+
+		axios.get(`${BACKEND_URL}/auth/user`, {
+			headers: {
+				'Content-Type': 'application/json',
+				'x-access-token': token
+			}
+		})
+			.then((res) => {
+				setUser(res.data.data)
+			})
+			.catch((err) => {
+				if (err.response.status === 403) {
+					setUser(null)
+					removeAuth()
+					setIsLoggedIn(false)
+				}
+				setFetchUserError(err.response.data.message)
+			})
+	}, [])
+
+
+	// useEffect(() => {
+	// 	// setAuth(null)
+
+	// 	console.log(typeof getAuth(), getAuth())
+	// }, [])
 
 	return (
 		<AuthContext.Provider
-			value={{ token, isLoggedIn, login, authError, signup, logout, setToken }}>
+			value={{ token, isLoggedIn, login, authError, signup, logout, setToken, fetchUser }}>
 			{children}
 		</AuthContext.Provider>
 	);

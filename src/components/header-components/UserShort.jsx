@@ -15,8 +15,8 @@ import { Link } from "react-router-dom";
 
 export const UserShort = () => {
 	const [showUserMenu, setShowUserMenu] = useState(false);
-	const { user, fetchUser } = useContext(UserContext);
-	const { token, logout } = useContext(AuthContext);
+	const { user } = useContext(UserContext);
+	const { token, logout, fetchUser, isLoggedIn } = useContext(AuthContext);
 	const [showLogoutPrompt, setShowLogoutPrompt] = useState(false);
 	const [showAvatarPrompt, setShowAvatarPrompt] = useState(false);
 
@@ -25,11 +25,14 @@ export const UserShort = () => {
 	};
 
 	useEffect(() => {
-
 		if (!user) {
-			fetchUser(token);
+			fetchUser();
 		}
-	}, [token, user, fetchUser]);
+
+		if(user) {
+			if(user.imagePath === null ) setShowAvatarPrompt(true);
+		}
+	}, [token, user, fetchUser, isLoggedIn]);
 
 	if (user === null)
 		return (
@@ -41,13 +44,13 @@ export const UserShort = () => {
 			<div
 				onClick={toggleUserMenu}
 				className="w-8 h-8 rounded-full bg-primary-100 cursor-pointer">
-				{user.imagePath !== null ? (
+				{user.imagePath !== null && (
 					<img
 						src={user.imagePath}
 						alt="User"
 						className="w-full h-full object-cover rounded-full"
 					/>
-				) : null}
+				)}
 			</div>
 			<div className="font-semibold">{user.firstName}</div>
 			<AnimatePresence>
@@ -83,13 +86,13 @@ export const UserShort = () => {
 						</button>
 						<div className="flex flex-col items-center gap-2 ">
 							<div className="w-16 h-16 rounded-full bg-primary-100 relative">
-								{user.imagePath !== null && (
+								{user.imagePath !== null ? (
 									<img
 										src={user.imagePath}
 										alt="User"
 										className="w-full h-full object-cover rounded-full"
 									/>
-								)}
+								): null}
 
 								<div
 									onClick={() => {

@@ -120,9 +120,9 @@ export const ChatArea = () => {
 
 					setMessages([...messages, aiResponse.data]);
 				})
-				.catch((error) => {
+				.catch(() => {
 					// setIsLoading(false);
-					console.error(error);
+					// console.error(error);
 					displayError("Failed to generate response");
 					messages.pop();
 				})
